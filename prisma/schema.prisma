@@ -1,0 +1,110 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum StatusCall {
+  open
+  currently_assisting_a_client
+  closed
+}
+
+model Admin {
+  id String @id @default(uuid())
+  email String @unique
+  name String
+  password String
+
+  createdAt DateTime @default(now()) @map("created_At")
+  updatedAt DateTime? @updatedAt @map("update_At")
+
+  @@map("Admin")
+}
+
+model Technical {
+  id String @id @default(uuid())
+  name String
+  email String @unique
+  password String
+  must_change_password Boolean @default(false)
+  image String?
+  available_hours Json
+
+  technicalCall Call[]
+  technicalCallService CallService[]
+
+  createdAt DateTime @default(now()) @map("created_At")
+  updatedAt DateTime? @updatedAt @map("updated_At")
+
+  @@map("Technical")
+}
+
+model Customer {
+  id String @id @default(uuid())
+  name String @unique
+  email String
+  password String
+  image String?
+
+  customerCall Call[]
+
+  createdAt DateTime @default(now()) @map("created_At")
+  updatedAt DateTime? @updatedAt @map("updated_At")
+
+  @@map("Customer")
+}
+
+model Service {
+  id String @id @default(uuid())
+  description String
+  price Decimal
+  active Boolean
+
+  serviceCallService CallService[]
+
+  createdAt DateTime @default(now()) @map("created_At")
+  updatedAt DateTime? @updatedAt @map("updated_At")
+
+  @@map("Service")
+}
+
+model Call {
+  id String @id @default(uuid())
+  status StatusCall @default(open)
+  description String
+
+  customer_id String @map("customer_id")
+  technical_id String @map("technical_id")
+
+  callCallService CallService[]
+
+  createdAt DateTime @default(now()) @map("created_At")
+  updatedAt DateTime? @updatedAt @map("updated_At")
+
+  customerID Customer @relation(fields: [customer_id], references: [id])
+  technicalID Technical? @relation(fields: [technical_id], references: [id])
+
+  @@map("Call")
+}
+
+model CallService {
+  id String @id @default(uuid())
+  price Decimal
+
+  call_id String @map("call_id")
+  service_id String @map("service_id")
+  added_by String @map("added_by")
+
+  createdAt DateTime @default(now()) @map("created_At")
+
+  callID Call @relation(fields: [call_id], references: [id])
+  serviceID Service @relation(fields: [service_id], references: [id])
+  addedBY Technical @relation(fields: [added_by], references: [id])
+
+  @@map("Call_Service")
+}
