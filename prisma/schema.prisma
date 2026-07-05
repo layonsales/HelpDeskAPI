@@ -46,8 +46,8 @@ model Technical {
 
 model Customer {
   id String @id @default(uuid())
-  name String @unique
-  email String
+  name String
+  email String @unique
   password String
   image String?
 
