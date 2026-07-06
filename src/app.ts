@@ -1,11 +1,11 @@
 import express from "express";
-import { errorHandler } from "./middleware/error-handler";
 import { routes } from "./routes";
+import { errorHandler } from "./middleware/error-handler";
 
 const app = express();
 
 app.use(express.json());
-app.use(errorHandler);
 app.use(routes);
+app.use(errorHandler);
 
 export { app };

@@ -46,7 +46,6 @@ class SessionController {
       }
     }
 
-    // const user = admin || cliente || tecnico
     const matchedPassword = await compare(password, user.password);
 
     if (!matchedPassword) {
@@ -61,7 +60,9 @@ class SessionController {
         expiresIn,
       });
 
-      response.status(200).json({ token, user });
+      const { password: _, ...userWithoutPassword } = user;
+
+      response.status(200).json({ token, userWithoutPassword });
     }
   }
 }
