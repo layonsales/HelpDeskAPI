@@ -63,7 +63,7 @@ model Service {
   id String @id @default(uuid())
   description String
   price Decimal
-  active Boolean
+  active Boolean @default(true)
 
   serviceCallService CallService[]
 

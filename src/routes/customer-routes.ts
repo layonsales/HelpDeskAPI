@@ -1,17 +1,28 @@
 import { Router } from "express";
-import { CustomerController } from "../controller/customer-controller";
+import { AccountCustomerController } from "../controller/customers-accounts-controller";
 import { ensureAuthorization } from "../middleware/ensure-authorization";
 import { verifyUserAuthorization } from "../middleware/verifyUserAuthorization";
 
-const customerRoute = Router();
-const customerController = new CustomerController();
+const accountCustomerRoute = Router();
+const accountCustomerController = new AccountCustomerController();
 
-customerRoute.use(ensureAuthorization);
+accountCustomerRoute.use(ensureAuthorization);
 
-customerRoute.post(
+accountCustomerRoute.post("/", accountCustomerController.create);
+accountCustomerRoute.get(
   "/",
   verifyUserAuthorization(["admin"]),
-  customerController.create,
+  accountCustomerController.index,
+);
+accountCustomerRoute.patch(
+  "/:id",
+  verifyUserAuthorization(["admin", "cliente"]),
+  accountCustomerController.patch,
+);
+accountCustomerRoute.delete(
+  "/:id",
+  verifyUserAuthorization(["admin", "cliente"]),
+  accountCustomerController.delete,
 );
 
-export { customerRoute };
+export { accountCustomerRoute };
