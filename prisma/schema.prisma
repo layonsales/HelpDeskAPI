@@ -86,8 +86,8 @@ model Call {
   createdAt DateTime @default(now()) @map("created_At")
   updatedAt DateTime? @updatedAt @map("updated_At")
 
-  customerID Customer @relation(fields: [customer_id], references: [id])
-  technicalID Technical? @relation(fields: [technical_id], references: [id])
+  customerID Customer @relation(fields: [customer_id], references: [id], onDelete: Cascade)
+  technicalID Technical @relation(fields: [technical_id], references: [id])
 
   @@map("Call")
 }
@@ -102,9 +102,9 @@ model CallService {
 
   createdAt DateTime @default(now()) @map("created_At")
 
-  callID Call @relation(fields: [call_id], references: [id])
+  callID Call @relation(fields: [call_id], references: [id], onDelete: Cascade)
   serviceID Service @relation(fields: [service_id], references: [id])
-  addedBY Technical? @relation(fields: [added_by], references: [id])
+  addedBY Technical @relation(fields: [added_by], references: [id])
 
   @@unique([call_id, service_id])
 

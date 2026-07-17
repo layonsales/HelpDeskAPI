@@ -23,7 +23,10 @@ class ServicesController {
   }
 
   async index(request: Request, response: Response) {
-    const service = await prismaDataBase.service.findMany();
+    const active = true;
+    const service = await prismaDataBase.service.findMany({
+      where: { active },
+    });
 
     return response.status(200).json(service);
   }
