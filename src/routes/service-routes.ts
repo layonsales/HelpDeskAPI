@@ -14,7 +14,7 @@ servicesRoute.post(
 );
 servicesRoute.get(
   "/",
-  verifyUserAuthorization(["admin"]),
+  verifyUserAuthorization(["admin", "cliente"]),
   servicesController.index,
 );
 servicesRoute.patch(

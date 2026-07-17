@@ -104,7 +104,9 @@ model CallService {
 
   callID Call @relation(fields: [call_id], references: [id])
   serviceID Service @relation(fields: [service_id], references: [id])
-  addedBY Technical @relation(fields: [added_by], references: [id])
+  addedBY Technical? @relation(fields: [added_by], references: [id])
+
+  @@unique([call_id, service_id])
 
   @@map("Call_Service")
 }
