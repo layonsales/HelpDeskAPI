@@ -98,13 +98,13 @@ model CallService {
 
   call_id String @map("call_id")
   service_id String @map("service_id")
-  added_by String @map("added_by")
+  added_by String? @map("added_by")
 
   createdAt DateTime @default(now()) @map("created_At")
 
   callID Call @relation(fields: [call_id], references: [id], onDelete: Cascade)
   serviceID Service @relation(fields: [service_id], references: [id])
-  addedBY Technical @relation(fields: [added_by], references: [id])
+  addedBY Technical? @relation(fields: [added_by], references: [id])
 
   @@unique([call_id, service_id])
 

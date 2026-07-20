@@ -9,7 +9,7 @@ const callController = new CallController();
 callRouter.use(ensureAuthorization);
 
 callRouter.post(
-  "/:id",
+  "/",
   verifyUserAuthorization(["cliente"]),
   callController.create,
 );
@@ -20,18 +20,40 @@ callRouter.post(
   callController.addService,
 );
 
-callRouter.get("/", verifyUserAuthorization(["admin"]), callController.index);
+callRouter.get(
+  "/",
+  verifyUserAuthorization(["admin", "cliente"]),
+  callController.index,
+);
 
 callRouter.get(
-  "/callByTechnical/:id",
-  verifyUserAuthorization(["admin", "tecnico"]),
-  callController.callByTechnical,
+  "/technical/me",
+  verifyUserAuthorization(["tecnico"]),
+  callController.myCallsAsTechnical,
+);
+
+callRouter.get(
+  "/technical/:technical_id",
+  verifyUserAuthorization(["admin"]),
+  callController.callsByTechnicalForAdmin,
 );
 
 callRouter.patch(
   "/:id",
-  verifyUserAuthorization(["admin", "tecnico"]),
+  verifyUserAuthorization(["admin"]),
   callController.patchStatus,
+);
+
+callRouter.patch(
+  "/start/:id",
+  verifyUserAuthorization(["tecnico"]),
+  callController.start,
+);
+
+callRouter.patch(
+  "/close/:id",
+  verifyUserAuthorization(["tecnico"]),
+  callController.close,
 );
 
 callRouter.delete(

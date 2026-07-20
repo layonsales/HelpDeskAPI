@@ -23,7 +23,7 @@ servicesRoute.patch(
   servicesController.patch,
 );
 servicesRoute.patch(
-  "/deactivate/:id",
+  "/:id/deactivate",
   verifyUserAuthorization(["admin"]),
   servicesController.deactivate,
 );

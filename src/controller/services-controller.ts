@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { prismaDataBase } from "../database/prismaDataBase";
 import z from "zod";
 import { Prisma } from "../generated/prisma/client";
+import { AppError } from "../utils/AppError";
 
 class ServicesController {
   async create(request: Request, response: Response) {
@@ -34,8 +35,8 @@ class ServicesController {
   async patch(request: Request, response: Response) {
     const bodySchema = z
       .object({
-        description: z.string().trim(),
-        price: z.coerce.number().positive(),
+        description: z.string().trim().optional(),
+        price: z.coerce.number().positive().optional(),
       })
       .refine(
         (data) => data.description !== undefined || data.price !== undefined,
@@ -50,6 +51,16 @@ class ServicesController {
 
     const { description, price } = bodySchema.parse(request.body);
     const { id } = paramSchema.parse(request.params);
+
+    const serviceExists = await prismaDataBase.service.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!serviceExists) {
+      throw new AppError("Service not found", 404);
+    }
 
     const data: {
       description?: string;
@@ -73,20 +84,29 @@ class ServicesController {
   }
 
   async deactivate(request: Request, response: Response) {
-    const bodySchema = z.object({
-      active: z.boolean(),
-    });
-
     const paramSchema = z.object({
       id: z.uuid(),
     });
 
-    const { active } = bodySchema.parse(request.body);
     const { id } = paramSchema.parse(request.params);
+
+    const service = await prismaDataBase.service.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!service) {
+      throw new AppError("Service not found", 404);
+    }
+
+    if (!service.active) {
+      throw new AppError("Service is already inactive", 400);
+    }
 
     await prismaDataBase.service.update({
       data: {
-        active: active,
+        active: false,
       },
       where: { id },
     });
